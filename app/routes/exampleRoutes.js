@@ -12,17 +12,22 @@ module.exports = (app) => {
 
   const router = require("express").Router();
 
-  router.get(
-    "/",
-    [exampleMiddleware.exampleMiddleware],
-    exampleController.exampleFunction
-  );
+  router.get("/rf1", exampleController.refactoreMe1);
+  router.post("/rf2", exampleController.refactoreMe2);
+  router.post("/rf3", exampleController.refactoreMe3);
+  router.get("/callmewss", exampleController.callmeWebSocket);
 
-  router.get(
-    "/",
-    [exampleMiddleware.exampleMiddleware],
-    exampleController.exampleFunction
-  );
+  // router.get(
+  //   "/",
+  //   [exampleMiddleware.exampleMiddleware],
+  //   exampleController.exampleFunction
+  // );
+
+  // router.get(
+  //   "/",
+  //   [exampleMiddleware.exampleMiddleware],
+  //   exampleController.exampleFunction
+  // );
 
   app.use("/api/data", router);
 };

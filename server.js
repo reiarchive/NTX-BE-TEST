@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const app = express();
+const WebSocket = require('ws');
 
 const corsOptions = {
   origin: ["http://localhost:8080"],
@@ -33,12 +34,15 @@ db.sequelize.sync();
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });
 });
+// app.get("/", refactorRoute);
 
 // routes
-// require("./app/routes/exaole.routes")(app);
+require("./app/routes/exampleRoutes.js")(app);
+// app.get("/refactor", refactorRoute);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 7878;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+  
 });
