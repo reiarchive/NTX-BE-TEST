@@ -14,8 +14,9 @@ module.exports = (app) => {
 
   router.get("/rf1", exampleController.refactoreMe1);
   router.post("/rf2", exampleController.refactoreMe2);
-  router.post("/rf3", exampleController.refactoreMe3);
+
   router.get("/callmewss", exampleController.callmeWebSocket);
+  router.post("/getdata", exampleController.getData);
 
   // router.get(
   //   "/",
