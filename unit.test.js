@@ -1,26 +1,21 @@
 const request = require('supertest');
 const { app, server } = require('./server');
-// const { expect } = require('chai');
+const jwt = require('jsonwebtoken');
+const config = require('./app/config/auth');
 
 async function delayedFunction() {
-    // Wait for 3 seconds (3000 milliseconds) before running the actual code
     await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // Your code here...
 }
 
 
-describe('Endpoint API Testing', () => {
+describe('Public Endpoint API Test', () => {
 
     beforeAll(async () => {
         await app.sequelizeReady;
+
+        // Delayed the test for 3 seconds, ensuring the sequelize sync complete
         await delayedFunction();
     });
-
-    afterAll(async () => {
-        await server.close();
-    })
-
 
     it('should return "Hello" when GET request is made to "/"', async () => {
 
@@ -35,7 +30,7 @@ describe('Endpoint API Testing', () => {
         const expected = {
             statusCode: 200,
             success: true,
-            data: expect.any(Array), // This matches any array, regardless of its content
+            data: expect.any(Array),
         };
 
         const response = await request(app).get('/api/data/rf1');
@@ -65,7 +60,17 @@ describe('Endpoint API Testing', () => {
         expect(response.body).toMatchObject(expected);
     });
 
-    it('should return object of data when POST made to /api/data/getdata [ Source Country ] Test', async () => {
+});
+
+describe('[aksesGetData] Role endpoint API TEST', () => {
+    // aksesCallMeWss
+    let token;
+    beforeAll(async () => {
+        // Generate jwt token
+        token = jwt.sign({ email: "azulifirman@gmail.com" }, config.secret, { expiresIn: '1h' });
+    });
+
+    it('should return object of data when POST made to /api/data/getdata [ Source Country ]', async () => {
 
         const expected = {
             "success": true,
@@ -82,59 +87,96 @@ describe('Endpoint API Testing', () => {
 
         const response = await request(app)
             .post('/api/data/getdata')
-            .send(postData)
-            .set('Accept', 'application/json');
+            .set('Authorization', token)
+            .send(postData);
 
         expect(response.body).toMatchObject(expected);
 
     });
 
-    // ss
+    it('should return object of data when POST made to /api/data/getdata [ Destination Country ]', async () => {
 
-    // it('should return object of data when POST made to /api/data/getdata [ Source Country ]', async () => {
+        const expected = {
+            "success": true,
+            "statusCode": 200,
+            "data": {
+                "label": expect.any(Array),
+                "total": expect.any(Array)
+            }
+        }
 
-    //     const expected = {
-    //         "success": true,
-    //         "statusCode": 200,
-    //         "data": {
-    //             "label": expect.any(Array),
-    //             "total": expect.any(Array)
-    //         }
-    //     }
+        const postData = {
+            "type": "destinationCountry"
+        };
 
-    //     const postData = {
-    //         "type": "sourceCountry"
-    //     };
+        const response = await request(app)
+            .post('/api/data/getdata')
+            .set('Authorization', token)
+            .send(postData);
 
-    //     const response = await request(app)
-    //         .post('/api/data/getdata')
-    //         .send(postData)
-    //         .set('Accept', 'application/json');
+        expect(response.body).toMatchObject(expected);
 
-    //     expect(response.body).toMatchObject(expected);
-    // });
+    });
 
-    // it('should return object of data when POST made to /api/data/getdata [ Destination Country ] ', async () => {
+    it('should return 403 when GET made to /api/data/callmewss', async () => {
 
-    //     const expected = {
-    //         "success": true,
-    //         "statusCode": 200,
-    //         "data": {
-    //             "label": expect.any(Array),
-    //             "total": expect.any(Array)
-    //         }
-    //     }
+        const response = await request(app).get('/api/data/callmewss').set('Authorization', token);
+        expect(response.status).toBe(403);
 
-    //     const postData = {
-    //         "type": "destinationCountry"
-    //     };
+    });
 
-    //     const response = await request(app)
-    //         .post('/api/data/getdata')
-    //         .send(postData)
-    //         .set('Accept', 'application/json');
+});
 
-    //     expect(response.body).toMatchObject(expected);
-    // });
+describe('[aksesCallMeWss] Role endpoint API TEST', () => {
+    // aksesCallMeWss
+    let token;
+    beforeAll(async () => {
+        // Generate jwt token
+        token = jwt.sign({ email: "rizkiardiansyah@gmail.com" }, config.secret, { expiresIn: '1h' });
+    });
+
+    it('should return 403 when POST made to /api/data/getdata [ Source Country ]', async () => {
+
+        const postData = {
+            "type": "sourceCountry"
+        };
+
+        const response = await request(app)
+            .post('/api/data/getdata')
+            .set('Authorization', token)
+            .send(postData);
+
+        expect(response.status).toBe(403);
+
+    });
+
+    it('should return 403 when POST made to /api/data/getdata [ Destination Country ]', async () => {
+
+        const postData = {
+            "type": "destinationCountry"
+        };
+
+        const response = await request(app)
+            .post('/api/data/getdata')
+            .set('Authorization', token)
+            .send(postData);
+
+        expect(response.status).toBe(403);
+
+    });
+
+    it('should return "socket running" when GET made to /api/data/callmewss', async () => {
+
+        const expected = {
+            statusCode: 200,
+            message: "Socket running!",
+            success: true,
+        }
+
+        const response = await request(app).get('/api/data/callmewss').set('Authorization', token);
+
+        expect(response.body).toMatchObject(expected);
+
+    });
 
 })

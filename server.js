@@ -6,7 +6,7 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:8080"],
+	origin: ["http://localhost:8080"],
 };
 
 app.use(cors(corsOptions));
@@ -20,30 +20,53 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // database
 const db = require("./app/models");
 
-db.sequelize.sync();
+// [ DISABLED IN PRODUCTION START ] 
+db.usersWithRole.sync({ force: true }).then(async () => {
+	// Insert initial rows
+	await db.usersWithRole.bulkCreate([
+		{
+			fullname: "Rizki Ardiansyah",
+			email: "rizkiardiansyah@gmail.com",
+			roleId: 2
+		},
+		{
+			fullname: "Azuli Firman",
+			email: "azulifirman@gmail.com",
+			roleId: 1
+		}
+	]);
+	console.log('Database synchronized and initial rows inserted.');
+}).catch((err) => {
+	console.error('Error synchronizing database:', err);
+});
 
-// never enable the code below in production
-// force: true will drop the table if it already exists
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and Resync Database with { force: true }");
-//   // initial();
-// });
+db.role.sync({ force: true }).then(async () => {
+	// Insert initial rows
+	await db.role.bulkCreate([
+		{ name: 'aksesGetData' },
+		{ name: 'aksesCallMeWss' }
+	]);
+	console.log('Database synchronized and initial rows inserted.');
+}).catch((err) => {
+	console.error('Error synchronizing database:', err);
+});
+
+db.sequelize.sync();
+// [ DISABLED IN PRODUCTION END ]
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Hello" });
+	res.json({ message: "Hello" });
 });
-// app.get("/", refactorRoute);
 
 // routes
 require("./app/routes/exampleRoutes.js")(app);
-// app.get("/refactor", refactorRoute);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 7878;
 
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+	console.log(`Server is running on port ${PORT}.`);
 });
 
 module.exports = { app, server };

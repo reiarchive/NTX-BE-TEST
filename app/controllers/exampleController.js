@@ -18,6 +18,7 @@ const initiateRedis = async () => {
 
 exports.refactoreMe1 = async (req, res) => {
 	// function ini sebenarnya adalah hasil survey dri beberapa pertnayaan, yang mana nilai dri jawaban tsb akan di store pada array seperti yang ada di dataset
+	// [ Refactored ]
 	try {
 		const surveys = await db.sequelize.query("SELECT * FROM surveys", { type: QueryTypes.SELECT });
 
@@ -29,7 +30,7 @@ exports.refactoreMe1 = async (req, res) => {
 			totalIndex.push(reduced)
 		});
 
-		res.status(200).send({
+		return res.status(200).send({
 			statusCode: 200,
 			success: true,
 			data: totalIndex,
@@ -38,7 +39,7 @@ exports.refactoreMe1 = async (req, res) => {
 
 	} catch (e) {
 		console.log(e)
-		res.status(500).send({
+		return res.status(500).send({
 			statusCode: 500,
 			success: false,
 			message: "Internal Server Error",
@@ -46,35 +47,8 @@ exports.refactoreMe1 = async (req, res) => {
 	}
 };
 
-// exports.refactoreMe2 = (req, res) => {
-// 	// function ini untuk menjalakan query sql insert dan mengupdate field "dosurvey" yang ada di table user menjadi true, jika melihat data yang di berikan, salah satu usernnya memiliki dosurvey dengan data false
-// 	db.surveys.create({
-// 		userId: req.body.userId,
-// 		values: req.body.values, // [] kirim array
-// 	}).then((data) => {
-
-// 		db.users.update({ dosurvey: true }, {
-// 			where: { id: req.body.userId },
-// 		}).then(() => console.log("success")).catch((err) => console.log(err));
-
-// 		res.status(201).send({
-// 			statusCode: 201,
-// 			message: "Survey sent successfully!",
-// 			success: true,
-// 			data,
-// 		});
-
-// 	}).catch((err) => {
-// 		console.log(err);
-// 		res.status(500).send({
-// 			statusCode: 500,
-// 			message: "Cannot post survey.",
-// 			success: false,
-// 		});
-// 	});
-// };
-
 exports.refactoreMe2 = async (req, res) => {
+	// [ Refactored ]
 	try {
 		const { userId, values } = req.body;
 
@@ -114,48 +88,6 @@ exports.refactoreMe2 = async (req, res) => {
 		});
 	}
 }
-
-// exports.refactoreMe2 = async (req, res) => {
-//   try {
-//     const { userId, values } = req.body;
-
-//     // Insert survey data using a raw SQL query
-//     const surveyQuery = `INSERT INTO "Surveys" ("userId", "values") VALUES (:userId, :values) RETURNING id;`;
-
-//     const [surveyResult, surveyMetadata] = await sequelize.query(surveyQuery, {
-//       replacements: { userId, values },
-//       type: sequelize.QueryTypes.INSERT,
-//     });
-
-//     // Update the "dosurvey" field in the User table
-//     const updateQuery = `UPDATE Users SET dosurvey = true WHERE id = :userIdToUpdate;`;
-
-//     await sequelize.query(updateQuery, {
-//       replacements: { userId },
-//       type: sequelize.QueryTypes.UPDATE,
-//     });
-
-//     console.log('Success');
-
-//     res.status(201).send({
-//       statusCode: 201,
-//       message: 'Survey sent successfully!',
-//       success: true,
-//       data: {
-//         surveyId: surveyResult[0].id,
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-
-//     res.status(500).send({
-//       statusCode: 500,
-//       message: 'Cannot post survey.',
-//       success: false,
-//     });
-//   }
-// };
-
 
 let lastUpdate = false;
 let wss = false;
@@ -237,13 +169,18 @@ exports.callmeWebSocket = async (req, res) => {
 
 		} catch (error) {
 			console.error('Error fetching and storing data:', error);
+			return res.status(500).send({
+				statusCode: 500,
+				success: true,
+				message: "Internal Server Error",
+			});
 		}
 	}
 
 	return res.status(200).send({
 		statusCode: 200,
-		message: "Socket running!",
 		success: true,
+		message: "Socket running!",
 	});
 };
 
@@ -281,7 +218,6 @@ exports.getData = async (req, res) => {
 
 			if (cachedData) {
 				// Return data in cache
-				console.log("Dari cache");
 				const parsedCachedData = JSON.parse(cachedData);
 
 				parsedCachedData.forEach(row => {
@@ -291,7 +227,6 @@ exports.getData = async (req, res) => {
 
 
 			} else {
-				console.log("Bukan dari cache");
 
 				const resultSourceCountry = await await db.sequelize.query(query, { type: QueryTypes.SELECT });
 
@@ -309,7 +244,7 @@ exports.getData = async (req, res) => {
 
 	} catch (e) {
 		console.log(e)
-		res.status(500).send({
+		return res.status(500).send({
 			statusCode: 500,
 			success: false,
 			message: "Internal Server Error",

@@ -24,17 +24,13 @@ db.surveys = require("./Surveys")(sequelize, Sequelize);
 db.users = require("./Users")(sequelize, Sequelize);
 db.attacks = require("./Attacks")(sequelize, Sequelize);
 
-// relation example
-// relation between role and user
-// db.role.hasMany(db.user, {
-//   as: "users",
-//   onDelete: "cascade",
-//   onUpdate: "cascade",
-// });
+// For jwt example
+db.usersWithRole = require("./UsersWithRole")(sequelize, Sequelize);
+db.role = require("./Role")(sequelize, Sequelize);
 
-// db.user.belongsTo(db.role, {
-//   foreignKey: "roleId",
-//   as: "role",
-// });
+db.usersWithRole.belongsTo(db.role, {
+  foreignKey: "roleId",
+  as: "role",
+});
 
 module.exports = db;

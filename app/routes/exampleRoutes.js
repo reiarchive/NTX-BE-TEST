@@ -14,21 +14,19 @@ module.exports = (app) => {
 
   router.get("/rf1", exampleController.refactoreMe1);
   router.post("/rf2", exampleController.refactoreMe2);
+  
+  router.post(
+    "/getdata",
+    [exampleMiddleware.verifyJWT, exampleMiddleware.checkUserRole("aksesGetData")],
+    exampleController.getData
+  );
 
-  router.get("/callmewss", exampleController.callmeWebSocket);
-  router.post("/getdata", exampleController.getData);
+  router.get(
+    "/callmewss",
+    [exampleMiddleware.verifyJWT, exampleMiddleware.checkUserRole("aksesCallMeWss")],
+    exampleController.callmeWebSocket
+  );
 
-  // router.get(
-  //   "/",
-  //   [exampleMiddleware.exampleMiddleware],
-  //   exampleController.exampleFunction
-  // );
-
-  // router.get(
-  //   "/",
-  //   [exampleMiddleware.exampleMiddleware],
-  //   exampleController.exampleFunction
-  // );
 
   app.use("/api/data", router);
 };

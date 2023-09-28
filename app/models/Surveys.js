@@ -2,6 +2,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
+    
     class Surveys extends Model { }
 
     Surveys.init(
