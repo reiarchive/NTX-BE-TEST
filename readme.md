@@ -1,22 +1,24 @@
 # NTX Backend Test
 
-ChatGPT : https://chat.openai.com/c/ec5f8bc0-a75d-4410-a4ed-e6b931adbb12
+This API was developed as a case study project.
 
-# Penjelasan
+## User Roles
 
-### User dengan Role :
-#### Table : users_with_role
+In this project, we have users with roles, which are stored in the `users_with_role` table.
 
-### Role :
-#### 1. aksesGetData
-#### 2. aksesCallMeWss
+### Role Types
 
-### Protected API :
-#### /api/data/callmewss
-#### /api/data/getdata
+1. `aksesGetData`: Users with this role have access to `/api/data/getdata` API
+2. `aksesCallMeWss`: Users with this role have access to `/api/data/callmewss` API
 
-# Unit test Delayed 3 seconds to ensure sequelize
-![Sequelize delayed 3 seconds](/unit_test.png)
+## Protected APIs
 
+This two APIs are protected with Json Web Token:
+1. `/api/data/getdata`
+2. `/api/data/callmewss`
 
+## Unit Test Delay
 
+Please note that there is a unit test delay of 3 seconds to ensure that Sequelize, works as expected.
+
+![Sequelize Delayed 3 Seconds](/unit_test.png)
