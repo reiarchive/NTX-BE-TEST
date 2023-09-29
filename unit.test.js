@@ -1,21 +1,10 @@
 const request = require('supertest');
-const { app, server } = require('./server');
+const app = require('./server');
 const jwt = require('jsonwebtoken');
 const config = require('./app/config/auth');
 
-async function delayedFunction() {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-}
-
 
 describe('Public Endpoint API Test', () => {
-
-    beforeAll(async () => {
-        await app.sequelizeReady;
-
-        // Delayed the test for 3 seconds, ensuring the sequelize sync complete
-        await delayedFunction();
-    });
 
     it('should return "Hello" when GET request is made to "/"', async () => {
 

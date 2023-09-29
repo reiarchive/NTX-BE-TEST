@@ -32,9 +32,8 @@ const verifyJWT = (req, res, next) => {
 const checkUserRole = (requiredRole) => {
 	return async (req, res, next) => {
 		const { email } = req.user;
-
 		if (!email) {
-			return res.status(403).json({
+			return res.status(403).send({
 				statusCode: 403,
 				success: false,
 				error: "Forbidden",
@@ -47,16 +46,18 @@ const checkUserRole = (requiredRole) => {
 			type: db.sequelize.QueryTypes.SELECT,
 		});
 
-		if(roleQuery.role.name == requiredRole) {
-			return next();
-		};
+		if (roleQuery.role.name !== requiredRole) {
+
+			return res.status(403).send({
+				statusCode: 403,
+				success: false,
+				error: "Forbidden",
+			});
+
+		} 
 		
-		return res.status(403).json({
-			statusCode: 403,
-			success: false,
-			error: "Forbidden",
-		});
-		
+		next();
+
 	};
 };
 

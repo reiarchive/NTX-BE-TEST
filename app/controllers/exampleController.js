@@ -211,7 +211,7 @@ exports.getData = async (req, res) => {
 	}
 
 	try {
-		return redisClient.get(redisKey, async (err, cachedData) => {
+		redisClient.get(redisKey, async (err, cachedData) => {
 
 			if (err) throw err;
 

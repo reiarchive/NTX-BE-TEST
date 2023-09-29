@@ -17,8 +17,6 @@ This two APIs are protected with Json Web Token:
 1. `/api/data/getdata`
 2. `/api/data/callmewss`
 
-## Unit Test Delay
-
-Please note that there is a unit test delay of 3 seconds to ensure that Sequelize, works as expected.
+## Unit Test
 
 ![Sequelize Delayed 3 Seconds](/unit_test.png)
