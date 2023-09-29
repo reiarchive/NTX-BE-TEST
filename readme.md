@@ -23,4 +23,4 @@ This two APIs are protected with Json Web Token:
 
 ## Unit Test
 
-![Sequelize Delayed 3 Seconds](/unit_test.png)
+![Unit Test](/unit_test.png)
