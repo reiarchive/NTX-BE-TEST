@@ -2,6 +2,10 @@
 
 This API was developed as a case study project.
 
+## ChatGPT Proof
+
+https://chat.openai.com/share/f3bf7a4f-e168-44f6-9c2b-b473385d3ab5
+
 ## User Roles
 
 In this project, we have users with roles, which are stored in the `users_with_role` table.
